@@ -19,6 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
       - name: Build
+        id: version
         run: ./build.sh
       - name: Archive artifact
         uses: actions/upload-artifact@v3
@@ -37,4 +38,4 @@ jobs:
         with:
           name: hpi
       - name: Publish to Artifactory
-        run: ./publish.sh
+        run: ./publish.sh ${{ needs.ci.steps.version.outputs.VERSION }}
