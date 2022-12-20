@@ -39,9 +39,13 @@ configure(subprojects - project(':job-dsl-api-viewer')) {
 
 project(':job-dsl-core') {
     repositories {
-        jcenter()
         maven {
-            url('https://repo.jenkins-ci.org/public/')
+            name 'artifactory'
+            url 'https://vonagecc.jfrog.io/artifactory/maven'
+            credentials {
+                username System.getenv('ARTIFACTORY_USER')
+                password System.getenv('ARTIFACTORY_SECRET')
+            }
         }
     }
 
@@ -150,55 +154,16 @@ project(':job-dsl-core') {
 
         repositories {
             maven {
-                name 'jenkins'
-                if (project.version.toString().endsWith('-SNAPSHOT')) {
-                    url System.properties['jpi.snapshotRepoUrl'] ?: 'https://repo.jenkins-ci.org/snapshots'
-                } else {
-                    url System.properties['jpi.repoUrl'] ?: 'https://repo.jenkins-ci.org/releases'
+                name 'artifactory'
+                url 'https://vonagecc.jfrog.io/artifactory/maven-jenkins-plugins'
+                credentials {
+                    username System.getenv('ARTIFACTORY_USER')
+                    password System.getenv('ARTIFACTORY_SECRET')
                 }
             }
         }
     }
-
-    // gradle-jpi plugin does this for plugins, so we're mimicking it to get our additional artifacts up to repo.jenkinsci.org
-    gradle.taskGraph.whenReady { taskGraph ->
-        if (taskGraph.hasTask(tasks.publish)) {
-            PublishingExtension publishingExtension = project.extensions.getByType(PublishingExtension)
-            def credentials = loadCredentialsForJenkinsCommunityRepository()
-            publishingExtension.repositories.getByName('jenkins').credentials {
-                username credentials.userName
-                password credentials.password
-            }
-        }
-    }
 }
-
-private Map loadCredentialsForJenkinsCommunityRepository() {
-    def dot = new File(System.getProperty('user.home'), '.jenkins-ci.org')
-
-    if (!dot.exists()) {
-        throw new Exception("Trying to deploy to Jenkins community repository but there's no credential file ${dot}. See https://wiki.jenkins-ci.org/display/JENKINS/Dot+Jenkins+Ci+Dot+Org")
-    }
-
-    Properties props = new Properties()
-    dot.withInputStream { i -> props.load(i) }
-    [userName: props.userName, password: props.password]
-}
-
-gitPublish {
-    commitMessage = "updated wiki for $version"
-    repoUri = "git@github.com:$githubUser/job-dsl-plugin.wiki.git"
-    branch = 'master'
-    repoDir = file("$buildDir/wiki")
-    contents {
-        from 'docs'
-        filesMatching('*.md') {
-            filter(ReplaceTokens, tokens: [version: version, jenkinsVersion: jenkinsVersion])
-        }
-    }
-}
-
-task publishDocs(dependsOn: ['gitPublishPush', ':job-dsl-api-viewer:gitPublishPush'])
 
 tasks.withType(AbstractArchiveTask).configureEach {
     preserveFileTimestamps = false

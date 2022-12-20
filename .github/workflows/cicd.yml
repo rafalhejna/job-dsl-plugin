@@ -1,0 +1,26 @@
+name: Jenkins Plugin CI/CD
+
+on:
+  workflow_dispatch:
+
+env:
+  ARTIFACTORY_USER: ${{secrets.ARTIFACTORY_USER}}
+  ARTIFACTORY_SECRET: ${{secrets.ARTIFACTORY_SECRET}}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Build
+        run: ./build.sh
+
+  cd:
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Publish to Artifactory
+        run: ./publish.sh

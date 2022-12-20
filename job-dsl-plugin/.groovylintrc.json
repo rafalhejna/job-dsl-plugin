@@ -1,0 +1,3 @@
+{
+  "codenarcRulesets": "../config/codenarc/rules.groovy,../config/codenarc/rules-test.groovy"
+}

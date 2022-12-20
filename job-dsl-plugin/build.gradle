@@ -1,7 +1,12 @@
 buildscript {
     repositories {
         maven {
-            url('https://repo.jenkins-ci.org/public/')
+            name 'artifactory'
+            url 'https://vonagecc.jfrog.io/artifactory/maven'
+            credentials {
+                username System.getenv('ARTIFACTORY_USER')
+                password System.getenv('ARTIFACTORY_SECRET')
+            }
         }
     }
     dependencies {
@@ -37,8 +42,9 @@ def generatedSourcesDir = 'generated'
 jenkinsPlugin {
     coreVersion = project.properties['jenkinsVersion']
     displayName = 'Job DSL'
-    url = 'https://github.com/jenkinsci/job-dsl-plugin'
-    gitHubUrl = 'https://github.com/jenkinsci/job-dsl-plugin'
+    url = 'https://github.com/rafalhejna/job-dsl-plugin'
+    gitHubUrl = 'https://github.com/rafalhejna/job-dsl-plugin'
+    repoUrl = 'https://vonagecc.jfrog.io/artifactory/maven-jenkins-plugins'
     compatibleSinceVersion = '1.81'
     localizerOutputDir = "$generatedSourcesDir/localizer"
     disabledTestInjection = false
@@ -67,6 +73,11 @@ jenkinsPlugin {
             id 'sheehan'
             name 'Matt Sheehan'
             email 'mr.sheehan@gmail.com'
+        }
+        developer {
+            id 'rafalhejna'
+            name 'Rafal Hejna'
+            email 'rafal.hejna@vonage.com'
         }
     }
     licenses {
