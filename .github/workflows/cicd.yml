@@ -20,7 +20,7 @@ jobs:
           java-version: '8'
       - name: Check java
         run: |
-          java --version
+          java -version
           echo $JAVA_HOME
           which java
       - name: Build
