@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ./gradlew build
+./gradlew build
 
 plugin_version=$(sed 's/version\=//' gradle.properties | head -n 1)
 
