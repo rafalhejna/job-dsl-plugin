@@ -21,11 +21,6 @@ jobs:
       - name: Build
         id: version
         run: ./build.sh
-      - name: Archive artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: hpi
-          path: ./job-dsl-plugin/build/libs/job-dsl.hpi
 
   cd:
     runs-on: ubuntu-latest
@@ -33,9 +28,5 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      - name: Get artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: hpi
       - name: Publish to Artifactory
         run: ./publish.sh ${{ needs.ci.steps.version.outputs.VERSION }}
