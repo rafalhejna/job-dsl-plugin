@@ -2,8 +2,10 @@
 
 # ./gradlew build
 
-plugin_version=$(sed -n '1,1 s/version\=//' gradle.properties)
+plugin_version=$(sed 's/version\=//' gradle.properties | head -n 1)
 sed 's/version\=//' gradle.properties
+echo '-------------------'
+sed 's/version\=//' gradle.properties | head -n 1
 echo '-------------------'
 sed -n '1,1 s/version\=//' gradle.properties
 echo '-------------------'
