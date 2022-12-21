@@ -35,5 +35,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: hpi
       - name: Publish to Artifactory
         run: ./publish.sh ${{ needs.ci.outputs.version }}
